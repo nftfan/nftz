@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -239,99 +240,106 @@ h1 {
     </footer>
 
     <script>
-        const contractAddress = '0x3e6E1F0e21A6521eE69baceEBA22e7CeCe42eb1c'; 
-        const abi = [
-            "function buyNFT(uint256 _tokenId, uint256 _amount) external payable",
-            "function tokenPrice() external view returns (uint256)"
-        ];
+    const contractAddress = '0x3e6E1F0e21A6521eE69baceEBA22e7CeCe42eb1c'; 
+    const abi = [
+        "function buyNFT(uint256 _tokenId, uint256 _amount) external payable",
+        "function tokenPrice() external view returns (uint256)"
+    ];
 
-        let provider;
-        let contract;
-        let signer;
+    let provider;
+    let contract;
+    let signer;
 
-        async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send('eth_requestAccounts', []);
-            signer = provider.getSigner();
-            const address = await signer.getAddress();
-            
-            // Update wallet address display
-            document.getElementById('walletAddress').innerText = `Connected: ${address}`;
-
-            // Enable the mint button
-            document.getElementById('mintButton').classList.add('enabled'); 
-            document.getElementById('mintButton').disabled = false;
-
-            // Hide status icons initially
-            document.getElementById('statusIcons').style.display = 'none';
-
-            // Change wallet icon and button text
-            document.getElementById('walletIcon').src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
-            const connectWalletButton = document.getElementById('connectWalletButton');
-            connectWalletButton.innerText = 'Connected'; // Change button text
-            connectWalletButton.style.backgroundColor = '#238636'; // Change button color
-
-            // Initialize contract
-            contract = new ethers.Contract(contractAddress, abi, signer);
-
-        } catch (error) {
-            console.error('Failed to connect wallet:', error);
-            alert('Failed to connect wallet. Check the console for details.');
-        }
-    } else {
-        alert('MetaMask is not installed. Please install MetaMask and try again.');
-    }
-}
-
-
-
-        async function handleMint() {
-            const tokenId = parseInt(document.getElementById('tokenId').value, 10);
-            const amount = parseInt(document.getElementById('amount').value, 10);
-
+    async function connectWallet() {
+        if (window.ethereum) {
             try {
-                document.getElementById('statusIcons').style.display = 'block'; // Show status icons during transaction
-                document.getElementById('processingIcon').style.display = 'inline'; // Show processing icon
-                document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
-                document.getElementById('errorIcon').style.display = 'none'; // Hide error icon
-                document.getElementById('statusText').innerText = 'Please wait for 30s';
-
-                const pricePerToken = await contract.tokenPrice();
-                const totalPrice = pricePerToken.mul(amount);
-
-                const tx = await contract.buyNFT(tokenId, amount, { value: totalPrice });
-                await tx.wait();  
-
-                document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
-                document.getElementById('completedIcon').style.display = 'inline'; // Show completed icon
-                document.getElementById('statusText').innerText = 'Transaction successful!';
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send('eth_requestAccounts', []);
+                signer = provider.getSigner();
+                const address = await signer.getAddress();
                 
-                // Hide status icons after a short delay
-                setTimeout(() => {
-                    document.getElementById('statusIcons').style.display = 'none';
-                }, 3000);
+                // Update wallet address display
+                document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+
+                // Enable the mint button
+                document.getElementById('mintButton').classList.add('enabled'); 
+                document.getElementById('mintButton').disabled = false;
+
+                // Hide status icons initially
+                document.getElementById('statusIcons').style.display = 'none';
+
+                // Change wallet icon and button text
+                const walletIcon = document.getElementById('walletIcon');
+                walletIcon.src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
+                walletIcon.onload = () => {
+                    console.log('Wallet icon loaded successfully');
+                };
+                walletIcon.onerror = () => {
+                    console.error('Failed to load wallet icon');
+                };
+                
+                const connectWalletButton = document.getElementById('connectWalletButton');
+                connectWalletButton.innerText = 'Connected'; // Change button text
+                connectWalletButton.style.backgroundColor = '#238636'; // Change button color
+
+                // Initialize contract
+                contract = new ethers.Contract(contractAddress, abi, signer);
+
             } catch (error) {
-                console.error('Transaction error:', error);
-                document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
-                document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
-                document.getElementById('errorIcon').style.display = 'inline'; // Show error icon
-                document.getElementById('statusText').innerText = 'Transaction failed!';
-                
-                // Hide status icons after a short delay
-                setTimeout(() => {
-                    document.getElementById('statusIcons').style.display = 'none';
-                }, 3000);
+                console.error('Failed to connect wallet:', error);
+                alert('Failed to connect wallet. Check the console for details.');
             }
+        } else {
+            alert('MetaMask is not installed. Please install MetaMask and try again.');
         }
+    }
 
-        function init() {
-            document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
-            document.getElementById('mintButton').addEventListener('click', handleMint);
+    async function handleMint() {
+        const tokenId = parseInt(document.getElementById('tokenId').value, 10);
+        const amount = parseInt(document.getElementById('amount').value, 10);
+
+        try {
+            document.getElementById('statusIcons').style.display = 'block'; // Show status icons during transaction
+            document.getElementById('processingIcon').style.display = 'inline'; // Show processing icon
+            document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
+            document.getElementById('errorIcon').style.display = 'none'; // Hide error icon
+            document.getElementById('statusText').innerText = 'Please wait for 30s';
+
+            const pricePerToken = await contract.tokenPrice();
+            const totalPrice = pricePerToken.mul(amount);
+
+            const tx = await contract.buyNFT(tokenId, amount, { value: totalPrice });
+            await tx.wait();  
+
+            document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
+            document.getElementById('completedIcon').style.display = 'inline'; // Show completed icon
+            document.getElementById('statusText').innerText = 'Transaction successful!';
+            
+            // Hide status icons after a short delay
+            setTimeout(() => {
+                document.getElementById('statusIcons').style.display = 'none';
+            }, 3000);
+        } catch (error) {
+            console.error('Transaction error:', error);
+            document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
+            document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
+            document.getElementById('errorIcon').style.display = 'inline'; // Show error icon
+            document.getElementById('statusText').innerText = 'Transaction failed!';
+            
+            // Hide status icons after a short delay
+            setTimeout(() => {
+                document.getElementById('statusIcons').style.display = 'none';
+            }, 3000);
         }
+    }
 
-        init();
-    </script>
+    function init() {
+        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+        document.getElementById('mintButton').addEventListener('click', handleMint);
+    }
+
+    init();
+</script>
+
 </body>
 </html>
