@@ -58,34 +58,34 @@
             }
         }
 
-        async function init() {
-            document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+        async function handleSubmit(event) {
+            event.preventDefault();
 
-            // Handle form submission
-            document.getElementById('buyForm').addEventListener('submit', async (event) => {
-                event.preventDefault();
+            const tokenId = parseInt(document.getElementById('tokenId').value, 10);
+            const amount = parseInt(document.getElementById('amount').value, 10);
 
-                const tokenId = parseInt(document.getElementById('tokenId').value);
-                const amount = parseInt(document.getElementById('amount').value);
+            try {
+                // Fetch token price
+                const pricePerToken = await contract.tokenPrice();
+                const totalPrice = pricePerToken.mul(amount);
 
-                try {
-                    // Fetch token price
-                    const pricePerToken = await contract.tokenPrice();
-                    const totalPrice = pricePerToken.mul(amount);
+                // Send transaction
+                const tx = await contract.buyNFT(tokenId, amount, { value: totalPrice });
+                await tx.wait();  // Wait for transaction to be mined
 
-                    // Send transaction
-                    const tx = await contract.buyNFT(tokenId, amount, { value: totalPrice });
-                    await tx.wait();  // Wait for transaction to be mined
-
-                    alert('Transaction successful!');
-                } catch (error) {
-                    console.error(error);
-                    alert('Transaction failed!');
-                }
-            });
+                alert('Transaction successful!');
+            } catch (error) {
+                console.error('Transaction error:', error);
+                alert('Transaction failed! Check the console for details.');
+            }
         }
 
         // Initialize the app
+        function init() {
+            document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+            document.getElementById('buyForm').addEventListener('submit', handleSubmit);
+        }
+
         init();
     </script>
 </body>
