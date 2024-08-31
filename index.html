@@ -80,16 +80,6 @@ header h1 {
     margin: 5px 0;
 }
 
-	    #connectWalletButton.connected {
-    background-color: #238636; /* Green color indicating connected state */
-    color: white;
-}
-
-#connectWalletButton.connected:hover {
-    background-color: #009900; /* Darker green for hover */
-}
-
-
 footer {
     width: 100%;
     text-align: center;
@@ -260,34 +250,27 @@ h1 {
         let signer;
 
         async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send('eth_requestAccounts', []);
-            signer = provider.getSigner();
-            const address = await signer.getAddress();
-            document.getElementById('walletAddress').innerText = `Connected: ${address}`;
-            document.getElementById('connectWalletButton').innerText = 'Connected';
-            document.getElementById('connectWalletButton').classList.add('connected'); 
-            document.getElementById('connectWalletButton').disabled = true;
-            document.getElementById('statusIcons').style.display = 'none'; // Hide status icons initially
-            contract = new ethers.Contract(contractAddress, abi, signer);
-            
-            // Update icon to cloud when connected
-            document.getElementById('connectWalletButton').innerHTML = `
-                <img src="https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif" alt="Connected Icon">
-                Connected
-            `;
+            if (window.ethereum) {
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send('eth_requestAccounts', []);
+                    signer = provider.getSigner();
+                    const address = await signer.getAddress();
+                    document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+                    document.getElementById('mintButton').classList.add('enabled'); 
+                    document.getElementById('mintButton').disabled = false; 
+                    document.getElementById('statusIcons').style.display = 'none'; // Hide status icons initially
+                    document.getElementById('walletIcon').src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
+                    contract = new ethers.Contract(contractAddress, abi, signer);
 
-        } catch (error) {
-            console.error('Failed to connect wallet:', error);
-            alert('Failed to connect wallet. Check the console for details.');
+                } catch (error) {
+                    console.error('Failed to connect wallet:', error);
+                    alert('Failed to connect wallet. Check the console for details.');
+                }
+            } else {
+                alert('MetaMask is not installed. Please install MetaMask and try again.');
+            }
         }
-    } else {
-        alert('MetaMask is not installed. Please install MetaMask and try again.');
-    }
-}
-
 
         async function handleMint() {
             const tokenId = parseInt(document.getElementById('tokenId').value, 10);
@@ -337,4 +320,3 @@ h1 {
     </script>
 </body>
 </html>
-
