@@ -44,29 +44,39 @@ header h1 {
     align-items: center;
 }
 
-#connectWalletButton, #walletAddress {
-    display: block;
-    margin: 5px 0;
-}
-
 #connectWalletButton {
-    background-color: #0066ff;
-    color: white;
-    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    background-color: #38ccbe;
+    color: #ffffff;
+    padding: 14px 40px;
     font-size: 1em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden; /* To handle icon positioning */
+    min-width: 180px; /* Ensures button is wide enough for the icon */
+}
+
+#connectWalletButton img {
+    position: absolute;
+    left: 5px;
+    width: 30px;
+    height: 30px;
+	border-radius: 5px;
 }
 
 #connectWalletButton:hover {
     background-color: #004cbf;
+    transform: scale(1.05);
 }
 
 #walletAddress {
     font-size: 14px;
-    color: #888;
+    color: #ffffff;
+    margin: 5px 0;
 }
 
 footer {
@@ -125,7 +135,7 @@ h1 {
     font-weight: bold;
 }
 
-#connectWalletButton, #mintButton {
+#mintButton {
     display: block;
     width: 100%;
     padding: 10px;
@@ -135,18 +145,6 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     margin-bottom: 10px;
-}
-
-#connectWalletButton {
-    background-color: #0066ff;
-    color: white;
-}
-
-#connectWalletButton:hover {
-    background-color: #004cbf;
-}
-
-#mintButton {
     background-color: #cccccc;
     color: #666;
     font-weight: bold;
@@ -210,7 +208,10 @@ h1 {
         <h1>NFTFANS Token</h1>
         <div class="header-content">
             <div class="wallet-info">
-                <button id="connectWalletButton">Connect Wallet</button>
+                <button id="connectWalletButton">
+                    <img id="walletIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/wallet.gif" alt="Wallet Icon">
+                    Connect Wallet
+                </button>
                 <p id="walletAddress">Not connected</p>
             </div>
         </div>
@@ -218,7 +219,6 @@ h1 {
     <div class="container">
         <h1>NFTFANS 1KT ART</h1>
         <p class="description">Every NFT art piece is loaded with 1000 Trillion $NFTFAN tokens.</p>
-		 <img id="nftImage" src="https://pbs.twimg.com/media/GWSh6jFWkAARGmN?format=jpg&name=medium" alt="NFT Image">
         <button id="mintButton" disabled>Mint NFT</button>
         <div id="statusIcons">
             <img id="processingIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/process.gif" alt="Processing">
@@ -257,6 +257,7 @@ h1 {
                     document.getElementById('mintButton').classList.add('enabled'); 
                     document.getElementById('mintButton').disabled = false; 
                     document.getElementById('statusIcons').style.display = 'none'; // Hide status icons initially
+                    document.getElementById('walletIcon').src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
                     contract = new ethers.Contract(contractAddress, abi, signer);
 
                 } catch (error) {
@@ -316,3 +317,4 @@ h1 {
     </script>
 </body>
 </html>
+
