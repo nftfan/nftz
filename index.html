@@ -203,6 +203,16 @@ h1 {
         font-size: 0.9em;
     }
 }
+	    /* Add this to your existing CSS */
+.hue-effect {
+    animation: hueShift 5s linear infinite; /* Animation for hue effect */
+}
+
+@keyframes hueShift {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
     </style>
 </head>
 <body>
@@ -251,48 +261,50 @@ h1 {
     let signer;
 
     async function connectWallet() {
-        if (window.ethereum) {
-            try {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send('eth_requestAccounts', []);
-                signer = provider.getSigner();
-                const address = await signer.getAddress();
-                
-                // Update wallet address display
-                document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+    if (window.ethereum) {
+        try {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send('eth_requestAccounts', []);
+            signer = provider.getSigner();
+            const address = await signer.getAddress();
+            
+            // Update wallet address display
+            document.getElementById('walletAddress').innerText = `Connected: ${address}`;
 
-                // Enable the mint button
-                document.getElementById('mintButton').classList.add('enabled'); 
-                document.getElementById('mintButton').disabled = false;
+            // Enable the mint button and add hue effect
+            const mintButton = document.getElementById('mintButton');
+            mintButton.classList.add('enabled', 'hue-effect'); // Add hue effect class
+            mintButton.disabled = false;
 
-                // Hide status icons initially
-                document.getElementById('statusIcons').style.display = 'none';
+            // Hide status icons initially
+            document.getElementById('statusIcons').style.display = 'none';
 
-                // Change wallet icon and button text
-                const walletIcon = document.getElementById('walletIcon');
-                walletIcon.src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
-                walletIcon.onload = () => {
-                    console.log('Wallet icon loaded successfully');
-                };
-                walletIcon.onerror = () => {
-                    console.error('Failed to load wallet icon');
-                };
-                
-                const connectWalletButton = document.getElementById('connectWalletButton');
-                connectWalletButton.innerText = 'Connected'; // Change button text
-                connectWalletButton.style.backgroundColor = '#238636'; // Change button color
+            // Change wallet icon and button text
+            const walletIcon = document.getElementById('walletIcon');
+            walletIcon.src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
+            walletIcon.onload = () => {
+                console.log('Wallet icon loaded successfully');
+            };
+            walletIcon.onerror = () => {
+                console.error('Failed to load wallet icon');
+            };
+            
+            const connectWalletButton = document.getElementById('connectWalletButton');
+            connectWalletButton.innerText = 'Connected'; // Change button text
+            connectWalletButton.style.backgroundColor = '#238636'; // Change button color
 
-                // Initialize contract
-                contract = new ethers.Contract(contractAddress, abi, signer);
+            // Initialize contract
+            contract = new ethers.Contract(contractAddress, abi, signer);
 
-            } catch (error) {
-                console.error('Failed to connect wallet:', error);
-                alert('Failed to connect wallet. Check the console for details.');
-            }
-        } else {
-            alert('MetaMask is not installed. Please install MetaMask and try again.');
+        } catch (error) {
+            console.error('Failed to connect wallet:', error);
+            alert('Failed to connect wallet. Check the console for details.');
         }
+    } else {
+        alert('MetaMask is not installed. Please install MetaMask and try again.');
     }
+}
+
 
     async function handleMint() {
         const tokenId = parseInt(document.getElementById('tokenId').value, 10);
