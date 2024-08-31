@@ -29,25 +29,29 @@
         let contract;
 
         window.onload = async function() {
-            if (window.ethereum) {
-                web3 = new Web3(window.ethereum);
-                try {
+            try {
+                if (window.ethereum) {
+                    web3 = new Web3(window.ethereum);
                     await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    contract = new web3.eth.Contract(await fetchABI(), contractAddress);
+                    const abi = await fetchABI();
+                    contract = new web3.eth.Contract(abi, contractAddress);
                     await loadPrice();
                     await loadNFTs();
-                } catch (error) {
-                    console.error('Error initializing web3 or contract:', error);
-                    alert('Error initializing web3 or contract. Check the console for details.');
+                } else {
+                    alert('Please install MetaMask!');
                 }
-            } else {
-                alert('Please install MetaMask!');
+            } catch (error) {
+                console.error('Error initializing web3 or contract:', error);
+                alert('Error initializing web3 or contract. Check the console for details.');
             }
         };
 
         async function fetchABI() {
             try {
                 const response = await fetch(contractABIUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
                 const json = await response.json();
                 return json;
             } catch (error) {
