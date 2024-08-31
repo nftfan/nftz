@@ -107,10 +107,12 @@
             border-radius: 10%;
             margin: 0 5px;
         }
-        #processingIcon {
-            display: none;
+        #statusIcons p {
+            color: #ffffff;
+            font-size: 0.9em;
+            margin-top: 5px;
         }
-        #completedIcon {
+        #processingIcon, #completedIcon, #errorIcon {
             display: none;
         }
         /* Media Queries for Mobile Devices */
@@ -142,6 +144,8 @@
         <div id="statusIcons">
             <img id="processingIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/process.gif" alt="Processing">
             <img id="completedIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/confetti.gif" alt="Completed">
+            <img id="errorIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/no-violence.gif" alt="Error">
+            <p id="statusText"></p>
         </div>
         <form id="buyForm">
             <input type="hidden" id="tokenId" value="1">
@@ -193,6 +197,8 @@
                 document.getElementById('statusIcons').style.display = 'block'; // Show status icons during transaction
                 document.getElementById('processingIcon').style.display = 'inline'; // Show processing icon
                 document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
+                document.getElementById('errorIcon').style.display = 'none'; // Hide error icon
+                document.getElementById('statusText').innerText = 'Please wait for 30s';
 
                 const pricePerToken = await contract.tokenPrice();
                 const totalPrice = pricePerToken.mul(amount);
@@ -202,7 +208,7 @@
 
                 document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
                 document.getElementById('completedIcon').style.display = 'inline'; // Show completed icon
-                alert('Transaction successful!');
+                document.getElementById('statusText').innerText = 'Transaction successful!';
                 
                 // Hide status icons after a short delay
                 setTimeout(() => {
@@ -210,10 +216,15 @@
                 }, 3000);
             } catch (error) {
                 console.error('Transaction error:', error);
-                alert('Transaction failed! Check the console for details.');
+                document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
+                document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
+                document.getElementById('errorIcon').style.display = 'inline'; // Show error icon
+                document.getElementById('statusText').innerText = 'Transaction failed!';
                 
-                // Hide status icons in case of error
-                document.getElementById('statusIcons').style.display = 'none';
+                // Hide status icons after a short delay
+                setTimeout(() => {
+                    document.getElementById('statusIcons').style.display = 'none';
+                }, 3000);
             }
         }
 
