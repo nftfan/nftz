@@ -222,16 +222,17 @@ h1 {
             <div class="wallet-info">
                 <button id="connectWalletButton">
                     <img id="walletIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/wallet.gif" alt="Wallet Icon">
-                    Connect Wallet
+                    <strong>Connect Wallet</strong>
+
                 </button>
                 <p id="walletAddress">Not connected</p>
             </div>
         </div>
     </header>
     <div class="container">
-        <h1>NFTFANS 1KT ART</h1>
-        <p class="description">Every NFT art piece is loaded with 1000 Trillion $NFTFAN tokens.</p>
-	    <div class="image-title">NFTFANS 1KT ART 01</div>
+        <h1>NFTFANS 1KT ART 01</h1>
+        <p class="description">You will get this NFT + 1KT $NFTFAN Tokens! <br> We recommend Metamask wallet. <br> Tokens will show up after 5 min. </p>
+	    
 	    <img id="nftImage" src="https://pbs.twimg.com/media/GWSh6jFWkAARGmN?format=jpg&name=medium" alt="NFT Image">
         <button id="mintButton" disabled>Mint NFT</button>
         <div id="statusIcons">
@@ -292,7 +293,7 @@ h1 {
                 console.error('Failed to load wallet icon');
             };
             
-            connectWalletButton.innerText = 'Connected'; // Change button text
+            connectWalletButton.innerHTML = '<strong>Connected</strong>';
             connectWalletButton.style.backgroundColor = '#238636'; // Change button color
 
             // Initialize contract
