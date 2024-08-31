@@ -3,84 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFTFANS Gallery</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.6/dist/web3.min.js"></script>
+    <title>Buy NFT on Polygon</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.6.9/dist/ethers.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
+            margin: 20px;
         }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .nft {
-            margin: 10px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .nft img {
-            max-width: 100%;
-            height: auto;
+        input, button {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>NFTFANS Gallery</h1>
-    <div class="gallery" id="gallery"></div>
+    <h1>Buy NFT on Polygon</h1>
+    <form id="buyForm">
+        <label for="tokenId">Token ID:</label>
+        <input type="number" id="tokenId" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" required><br>
+        <button type="submit">Buy NFT</button>
+    </form>
 
     <script>
-        // Set up web3 instance
-        const web3 = new Web3(Web3.givenProvider || "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID");
-        const contractAddress = "0xDb0579C6fb9e8595596EF07534017F9D830AdaF6";
-        const contractABI = [
-            // Minimal ABI to get URI
-            {
-                "constant": true,
-                "inputs": [{"name": "_tokenId", "type": "uint256"}],
-                "name": "uri",
-                "outputs": [{"name": "", "type": "string"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [{"name": "_tokenId", "type": "uint256"}],
-                "name": "totalSupply",
-                "outputs": [{"name": "", "type": "uint256"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }
+        // Define contract details
+        const contractAddress = '0xDb0579C6fb9e8595596EF07534017F9D830AdaF6';
+        const abi = [
+            "function buyNFT(uint256 _tokenId, uint256 _amount) external payable",
+            "function tokenPrice() external view returns (uint256)"
         ];
-        
-        const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-        async function loadNFTs() {
-            const gallery = document.getElementById('gallery');
-            const tokenIds = [0, 1, 2]; // Example token IDs, replace with your actual IDs
+        async function init() {
+            // Check if MetaMask is installed
+            if (window.ethereum) {
+                // Connect to Polygon network
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const polygonProvider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/'); // Polygon RPC URL
 
-            for (const tokenId of tokenIds) {
-                const uri = await contract.methods.uri(tokenId).call();
-                const response = await fetch(uri);
-                const metadata = await response.json();
-                
-                const nftElement = document.createElement('div');
-                nftElement.className = 'nft';
-                nftElement.innerHTML = `
-                    <h3>Token ID: ${tokenId}</h3>
-                    <img src="${metadata.image}" alt="NFT Image">
-                    <p>${metadata.name}</p>
-                `;
-                
-                gallery.appendChild(nftElement);
+                // Set up the contract with the Polygon provider
+                const contract = new ethers.Contract(contractAddress, abi, polygonProvider);
+
+                // Request account access if needed
+                await provider.send('eth_requestAccounts', []);
+
+                // Handle form submission
+                document.getElementById('buyForm').addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const tokenId = parseInt(document.getElementById('tokenId').value);
+                    const amount = parseInt(document.getElementById('amount').value);
+
+                    try {
+                        const signer = provider.getSigner();
+                        const contractWithSigner = contract.connect(signer);
+
+                        // Fetch token price
+                        const pricePerToken = await contractWithSigner.tokenPrice();
+                        const totalPrice = pricePerToken.mul(amount);
+
+                        // Send transaction
+                        const tx = await contractWithSigner.buyNFT(tokenId, amount, { value: totalPrice });
+                        await tx.wait();  // Wait for transaction to be mined
+
+                        alert('Transaction successful!');
+                    } catch (error) {
+                        console.error(error);
+                        alert('Transaction failed!');
+                    }
+                });
+            } else {
+                alert('MetaMask is not installed. Please install MetaMask and try again.');
             }
         }
 
-        loadNFTs();
+        // Initialize the app
+        init();
     </script>
 </body>
 </html>
