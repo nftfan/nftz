@@ -250,27 +250,40 @@ h1 {
         let signer;
 
         async function connectWallet() {
-            if (window.ethereum) {
-                try {
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
-                    await provider.send('eth_requestAccounts', []);
-                    signer = provider.getSigner();
-                    const address = await signer.getAddress();
-                    document.getElementById('walletAddress').innerText = `Connected: ${address}`;
-                    document.getElementById('mintButton').classList.add('enabled'); 
-                    document.getElementById('mintButton').disabled = false; 
-                    document.getElementById('statusIcons').style.display = 'none'; // Hide status icons initially
-                    document.getElementById('walletIcon').src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
-                    contract = new ethers.Contract(contractAddress, abi, signer);
+    if (window.ethereum) {
+        try {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send('eth_requestAccounts', []);
+            signer = provider.getSigner();
+            const address = await signer.getAddress();
+            
+            // Update the wallet address display
+            document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+            
+            // Enable the mint button and change its text
+            const mintButton = document.getElementById('mintButton');
+            mintButton.classList.add('enabled'); 
+            mintButton.disabled = false;
+            mintButton.innerText = 'Connected'; // Change button text
 
-                } catch (error) {
-                    console.error('Failed to connect wallet:', error);
-                    alert('Failed to connect wallet. Check the console for details.');
-                }
-            } else {
-                alert('MetaMask is not installed. Please install MetaMask and try again.');
-            }
+            // Hide status icons initially
+            document.getElementById('statusIcons').style.display = 'none'; 
+
+            // Change the wallet icon
+            document.getElementById('walletIcon').src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; 
+
+            // Initialize the contract
+            contract = new ethers.Contract(contractAddress, abi, signer);
+
+        } catch (error) {
+            console.error('Failed to connect wallet:', error);
+            alert('Failed to connect wallet. Check the console for details.');
         }
+    } else {
+        alert('MetaMask is not installed. Please install MetaMask and try again.');
+    }
+}
+
 
         async function handleMint() {
             const tokenId = parseInt(document.getElementById('tokenId').value, 10);
