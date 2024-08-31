@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy NFT on Polygon</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.6.9/dist/ethers.min.js"></script>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,7 +51,7 @@
                     contract = new ethers.Contract(contractAddress, abi, signer);
                 } catch (error) {
                     console.error('Failed to connect wallet:', error);
-                    alert('Failed to connect wallet. Please try again.');
+                    alert('Failed to connect wallet. Check the console for details.');
                 }
             } else {
                 alert('MetaMask is not installed. Please install MetaMask and try again.');
