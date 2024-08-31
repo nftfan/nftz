@@ -17,7 +17,9 @@
 </head>
 <body>
     <h1>Buy NFT on Polygon</h1>
-    <form id="buyForm">
+    <button id="connectWalletButton">Connect Wallet</button>
+    <p id="walletAddress">Not connected</p>
+    <form id="buyForm" style="display:none;">
         <label for="tokenId">Token ID:</label>
         <input type="number" id="tokenId" required><br>
         <label for="amount">Amount:</label>
@@ -33,47 +35,53 @@
             "function tokenPrice() external view returns (uint256)"
         ];
 
-        async function init() {
-            // Check if MetaMask is installed
+        let provider;
+        let contract;
+        let signer;
+        
+        async function connectWallet() {
             if (window.ethereum) {
-                // Connect to Polygon network
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const polygonProvider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/'); // Polygon RPC URL
-
-                // Set up the contract with the Polygon provider
-                const contract = new ethers.Contract(contractAddress, abi, polygonProvider);
-
-                // Request account access if needed
-                await provider.send('eth_requestAccounts', []);
-
-                // Handle form submission
-                document.getElementById('buyForm').addEventListener('submit', async (event) => {
-                    event.preventDefault();
-
-                    const tokenId = parseInt(document.getElementById('tokenId').value);
-                    const amount = parseInt(document.getElementById('amount').value);
-
-                    try {
-                        const signer = provider.getSigner();
-                        const contractWithSigner = contract.connect(signer);
-
-                        // Fetch token price
-                        const pricePerToken = await contractWithSigner.tokenPrice();
-                        const totalPrice = pricePerToken.mul(amount);
-
-                        // Send transaction
-                        const tx = await contractWithSigner.buyNFT(tokenId, amount, { value: totalPrice });
-                        await tx.wait();  // Wait for transaction to be mined
-
-                        alert('Transaction successful!');
-                    } catch (error) {
-                        console.error(error);
-                        alert('Transaction failed!');
-                    }
-                });
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send('eth_requestAccounts', []);
+                    signer = provider.getSigner();
+                    const address = await signer.getAddress();
+                    document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+                    document.getElementById('buyForm').style.display = 'block'; // Show the buy form
+                    contract = new ethers.Contract(contractAddress, abi, signer);
+                } catch (error) {
+                    console.error('Failed to connect wallet:', error);
+                    alert('Failed to connect wallet. Please try again.');
+                }
             } else {
                 alert('MetaMask is not installed. Please install MetaMask and try again.');
             }
+        }
+
+        async function init() {
+            document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+
+            // Handle form submission
+            document.getElementById('buyForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const tokenId = parseInt(document.getElementById('tokenId').value);
+                const amount = parseInt(document.getElementById('amount').value);
+
+                try {
+                    const pricePerToken = await contract.tokenPrice();
+                    const totalPrice = pricePerToken.mul(amount);
+
+                    // Send transaction
+                    const tx = await contract.buyNFT(tokenId, amount, { value: totalPrice });
+                    await tx.wait();  // Wait for transaction to be mined
+
+                    alert('Transaction successful!');
+                } catch (error) {
+                    console.error(error);
+                    alert('Transaction failed!');
+                }
+            });
         }
 
         // Initialize the app
