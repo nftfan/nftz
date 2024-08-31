@@ -3,137 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy NFT</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <title>NFTFANS Gallery</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.6/dist/web3.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; }
-        #nftGallery { margin-top: 20px; }
-        .nft { margin-bottom: 20px; }
-        .nft img { max-width: 200px; height: auto; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nft {
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .nft img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
-    <h1>Buy NFT</h1>
-    <p id="price">Loading price...</p>
-    <input type="number" id="tokenId" placeholder="Token ID" />
-    <input type="number" id="amount" placeholder="Amount" />
-    <button onclick="buyNFT()">Buy NFT</button>
-
-    <h2>Available NFTs</h2>
-    <div id="nftGallery">Loading NFTs...</div>
+    <h1>NFTFANS Gallery</h1>
+    <div class="gallery" id="gallery"></div>
 
     <script>
-        const contractAddress = '0xDb0579C6fb9e8595596EF07534017F9D830AdaF6';
-        const contractABIUrl = 'https://raw.githubusercontent.com/nftfan/alljson/main/NFTFANS.json';
-        let web3;
-        let contract;
-
-        window.onload = async function() {
-            try {
-                if (window.ethereum) {
-                    web3 = new Web3(window.ethereum);
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const abi = await fetchABI();
-                    contract = new web3.eth.Contract(abi, contractAddress);
-                    await loadPrice();
-                    await loadNFTs();
-                } else {
-                    alert('Please install MetaMask!');
-                }
-            } catch (error) {
-                console.error('Error initializing web3 or contract:', error);
-                alert('Error initializing web3 or contract. Check the console for details.');
+        // Set up web3 instance
+        const web3 = new Web3(Web3.givenProvider || "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID");
+        const contractAddress = "0xDb0579C6fb9e8595596EF07534017F9D830AdaF6";
+        const contractABI = [
+            // Minimal ABI to get URI
+            {
+                "constant": true,
+                "inputs": [{"name": "_tokenId", "type": "uint256"}],
+                "name": "uri",
+                "outputs": [{"name": "", "type": "string"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [{"name": "_tokenId", "type": "uint256"}],
+                "name": "totalSupply",
+                "outputs": [{"name": "", "type": "uint256"}],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
             }
-        };
-
-        async function fetchABI() {
-            try {
-                const response = await fetch(contractABIUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const json = await response.json();
-                return json;
-            } catch (error) {
-                console.error('Error fetching ABI:', error);
-                alert('Error fetching ABI. Check the console for details.');
-                return [];
-            }
-        }
-
-        async function loadPrice() {
-            try {
-                const price = await contract.methods.tokenPrice().call();
-                document.getElementById('price').innerText = `Price per NFT: ${web3.utils.fromWei(price, 'ether')} MATIC`;
-            } catch (error) {
-                console.error('Error fetching token price:', error);
-                document.getElementById('price').innerText = 'Error loading price.';
-            }
-        }
+        ];
+        
+        const contract = new web3.eth.Contract(contractABI, contractAddress);
 
         async function loadNFTs() {
-            const nftGallery = document.getElementById('nftGallery');
-            nftGallery.innerHTML = "Loading NFTs...";
+            const gallery = document.getElementById('gallery');
+            const tokenIds = [0, 1, 2]; // Example token IDs, replace with your actual IDs
 
-            try {
-                const mintedTokens = await contract.methods.getMintedTokens().call();
-                if (mintedTokens.length === 0) {
-                    nftGallery.innerHTML = "No NFTs minted yet.";
-                    return;
-                }
-
-                nftGallery.innerHTML = "";  // Clear current NFTs
-
-                for (let tokenId of mintedTokens) {
-                    const tokenUri = await contract.methods.uri(tokenId).call();
-
-                    // Check if tokenUri is valid
-                    if (!tokenUri) {
-                        continue; // Skip invalid URIs
-                    }
-
-                    const nftElement = document.createElement('div');
-                    nftElement.classList.add('nft');
-                    nftElement.innerHTML = `
-                        <p>NFT ID: ${tokenId}</p>
-                        <p>URI: ${tokenUri}</p>
-                        <img src="${tokenUri}" alt="NFT Image">
-                    `;
-                    nftGallery.appendChild(nftElement);
-                }
-            } catch (error) {
-                console.error('Error loading NFTs:', error);
-                nftGallery.innerHTML = 'Error loading NFTs.';
+            for (const tokenId of tokenIds) {
+                const uri = await contract.methods.uri(tokenId).call();
+                const response = await fetch(uri);
+                const metadata = await response.json();
+                
+                const nftElement = document.createElement('div');
+                nftElement.className = 'nft';
+                nftElement.innerHTML = `
+                    <h3>Token ID: ${tokenId}</h3>
+                    <img src="${metadata.image}" alt="NFT Image">
+                    <p>${metadata.name}</p>
+                `;
+                
+                gallery.appendChild(nftElement);
             }
         }
 
-        async function buyNFT() {
-            try {
-                const accounts = await web3.eth.getAccounts();
-                const account = accounts[0];
-                const tokenId = document.getElementById('tokenId').value;
-                const amount = document.getElementById('amount').value;
-
-                const tokenPrice = await contract.methods.tokenPrice().call();
-                const totalPrice = web3.utils.toWei((tokenPrice * amount).toString(), 'ether');
-
-                await contract.methods.buyNFT(tokenId, amount).send({
-                    from: account,
-                    value: totalPrice
-                })
-                .on('receipt', function(receipt) {
-                    alert('Transaction Successful!');
-                    loadNFTs();  // Reload the NFTs after purchase
-                })
-                .on('error', function(error) {
-                    alert('Transaction Failed!');
-                    console.error(error);
-                });
-            } catch (error) {
-                console.error('Error buying NFT:', error);
-                alert('Error buying NFT. Check the console for details.');
-            }
-        }
+        loadNFTs();
     </script>
 </body>
 </html>
