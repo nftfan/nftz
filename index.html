@@ -9,21 +9,43 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            text-align: center; /* Center the content */
         }
-        input, button {
+        #nftImage {
+            width: 400px;
+            height: 400px;
+            object-fit: cover; /* Ensures image covers the box */
+            border: 1px solid #ddd; /* Optional border for better visibility */
+            border-radius: 8px; /* Optional rounded corners */
+            margin-bottom: 20px; /* Space between image and button */
+        }
+        #buyForm {
+            display: none; /* Hide form by default */
+        }
+        button {
             margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <h1>Buy NFT on Polygon</h1>
+    <img id="nftImage" src="https://pbs.twimg.com/media/GWSh6jFWkAARGmN?format=jpg&name=medium" alt="NFT Image">
     <button id="connectWalletButton">Connect Wallet</button>
     <p id="walletAddress">Not connected</p>
-    <form id="buyForm" style="display:none;">
-        <label for="tokenId">Token ID:</label>
-        <input type="number" id="tokenId" required><br>
-        <label for="amount">Amount:</label>
-        <input type="number" id="amount" required><br>
+    <form id="buyForm">
+        <input type="hidden" id="tokenId" value="1">
+        <input type="hidden" id="amount" value="1">
         <button type="submit">Buy NFT</button>
     </form>
 
@@ -38,7 +60,7 @@
         let provider;
         let contract;
         let signer;
-        
+
         async function connectWallet() {
             if (window.ethereum) {
                 try {
