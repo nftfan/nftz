@@ -208,7 +208,7 @@ footer {
 
    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 <script type="text/javascript">
-    let provider;
+   let provider;
 let signer;
 let contract;
 
@@ -237,32 +237,25 @@ async function connectWallet() {
     updateMessage('');
 
     try {
-        // Check if any Ethereum wallet is available
-        if (typeof window.ethereum !== "undefined" || typeof window.bitkeep !== "undefined") {
-            if (window.bitkeep && window.bitkeep.ethereum) {
-                // Use BitKeep Wallet provider
-                provider = new ethers.providers.Web3Provider(window.bitkeep.ethereum);
-            } else if (window.ethereum.isMetaMask) {
-                // Use MetaMask provider
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-            } else if (window.ethereum.isBitgetWallet || window.ethereum.isBitget) {
-                // Use Bitget Wallet provider
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-            } else {
-                updateMessage("Please install MetaMask, Bitget Wallet, BitKeep Wallet, or another compatible wallet.");
-                return;
-            }
-
-            // Request account access
-            await provider.send("eth_requestAccounts", []);
-            signer = provider.getSigner();
-            contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-            document.getElementById("claimTokens").disabled = false;
-            updateMessage("Wallet connected.");
-        } else {
-            updateMessage("No Ethereum wallet detected. Please install MetaMask, Bitget Wallet, BitKeep Wallet, or another compatible wallet.");
+        // Check if BitKeep Wallet is installed and set up
+        if (typeof window.bitkeep !== "undefined" && typeof window.bitkeep.ethereum !== "undefined") {
+            provider = new ethers.providers.Web3Provider(window.bitkeep.ethereum);
+            await window.bitkeep.ethereum.request({ method: "eth_requestAccounts" });
         }
+        // Otherwise, check if MetaMask or other Ethereum wallets are installed
+        else if (typeof window.ethereum !== "undefined") {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            await window.ethereum.request({ method: "eth_requestAccounts" });
+        } else {
+            updateMessage("Please install MetaMask, BitKeep Wallet, or another compatible Ethereum wallet.");
+            return;
+        }
+
+        signer = provider.getSigner();
+        contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        document.getElementById("claimTokens").disabled = false;
+        updateMessage("Wallet connected.");
     } catch (error) {
         console.error("Error connecting wallet:", error);
         updateMessage("Failed to connect wallet. Please check your wallet or browser.");
