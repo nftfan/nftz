@@ -364,7 +364,7 @@ h1 {
         document.getElementById('processingIcon').style.display = 'inline'; 
         document.getElementById('completedIcon').style.display = 'none'; 
         document.getElementById('errorIcon').style.display = 'none'; 
-        document.getElementById('statusMessage').innerText = 'Processing your transaction...';
+        document.getElementById('statusMessage').innerText = 'Processing your transaction...Wait 30s <br> Assets will appear in your wallet up to 5min.';
 
         const pricePerToken = await contract.tokenPrice();
         const totalPrice = pricePerToken.mul(amount);
