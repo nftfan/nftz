@@ -4,358 +4,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFTFANS 1KT ART</title>
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <title>Claim Your Tokens</title>
+
+    <!-- Open Graph metadata -->
+    <meta property="og:title" content="Claim Your Tokens - NFT Fans">
+    <meta property="og:description" content="Claim your tokens now with NFT Fans! Connect your wallet and start claiming your exclusive NFT Fans tokens today. Limited availability!">
+    <meta property="og:image" content="https://raw.githubusercontent.com/nftfan/24h/main/2.5B%20%24NFTFAN.png">
+    <meta property="og:url" content="https://www.nftfanstoken.com/grants/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Claim Your Tokens - NFT Fans">
+    <meta name="twitter:description" content="Claim your tokens now with NFT Fans! Connect your wallet and start claiming your exclusive NFT Fans tokens today. Limited availability!">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/nftfan/24h/main/2.5B%20%24NFTFAN.png">
+    <meta name="twitter:url" content="https://www.nftfanstoken.com/grants/">
+
     <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #000000;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center content horizontally */
-    min-height: 100vh;
-    overflow-x: hidden; /* Prevent horizontal scroll */
-	min-width: 350px;
-}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
 
-header {
-    width: 100%;
-    background-color: #333;
+      header {
+    background-color: #007bff;
     color: white;
-    padding: 15px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-header h1 {
-    font-size: 1.5em;
-    margin: 0;
-}
-
-.header-content {
-    margin-top: 10px;
-    text-align: center;
-}
-
-.wallet-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#connectWalletButton {
-    display: flex;
-    align-items: center;
-    background-color: #38ccbe;
-    color: #ffffff;
-    padding: 14px 40px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    position: relative;
-    overflow: hidden; /* To handle icon positioning */
-    min-width: 180px; /* Ensures button is wide enough for the icon */
-}
-
-#connectWalletButton img {
-    position: absolute;
-    left: 5px;
-    width: 30px;
-    height: 30px;
-	border-radius: 5px;
-}
-
-#connectWalletButton:hover {
-    background-color: #004cbf;
-    transform: scale(1.05);
-}
-
-#walletAddress {
-    font-size: 14px;
-    color: #ffffff;
-    margin: 5px 0;
+    
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 14px; /* Smaller font size to fit in the 11px height */
+    padding: 0; /* No additional padding */
+    line-height: 11px; /* Ensures text fits well within the height */
+    height: 30px; /* Explicitly set height */
+    box-sizing: border-box; /* Ensures padding and border are included in the height */
+    display: flex; /* Allows centering of content */
+    align-items: center; /* Vertically centers text */
+    justify-content: center; /* Horizontally centers text */
 }
 
 footer {
-    width: 100%;
-    text-align: center;
-    background-color: #333;
+    background-color: #007bff;
     color: white;
-    padding: 10px 0;
-    margin-top: auto;
-}
-
-.container {
-    background: linear-gradient(45deg, #ff6ec4, #7873f5, #ff6ec4, #7873f5); /* More vibrant colors */
-    background-size: 400% 400%;
-    animation: gradientShift 5s linear infinite; /* Faster animation */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    width: 350px; /* Fixed width for mobile */
-    margin: 20px;
-    box-sizing: border-box; /* Include padding and border in width */
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
-}
-
-h1 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: #ffffff;
-}
-
-.description {
-    font-size: 12px;
-    color: #ffffff;
-    margin-bottom: 20px;
-}
-
-#nftImage {
+    
+    position: fixed;
     width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    bottom: 0;
+    left: 0;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 10px; /* Smaller font size to fit in the 11px height */
+    padding: 0; /* No additional padding */
+    line-height: 11px; /* Ensures text fits well within the height */
+    height: 11px; /* Explicitly set height */
+    box-sizing: border-box; /* Ensures padding and border are included in the height */
+    display: flex; /* Allows centering of content */
+    align-items: center; /* Vertically centers text */
+    justify-content: center; /* Horizontally centers text */
 }
 
-.image-title {
-    font-size: 1.2em;
-    color: #333;
-    margin-bottom: 15px;
-    font-weight: bold;
-}
 
-#mintButton {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    margin-bottom: 10px;
-    background-color: #cccccc;
-    color: #666;
-    font-weight: bold;
-}
 
-#mintButton.enabled {
-    background-color: #ffcc00;
-    color: white;
-}
 
-#mintButton.enabled:hover {
-    background-color: #e6b800;
-}
+        .container {
+            padding: 80px 20px 60px; /* Adjust top and bottom padding to account for header and footer */
+            max-width: 90%;
+            width: 100%;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            text-align: center;
+            overflow: hidden; /* Ensure content stays within rounded corners */
+        }
 
-#walletAddress {
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 20px;
-}
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-#statusIcons {
-    display: none;
-    margin-top: 10px;
-}
+        h2 {
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 10px;
+        }
+        h3 {
+            font-size: 14px;
+            color: #333;
+            margin-top: 10px;
+        }
 
-#statusIcons img {
-    width: 50px;
-    height: 50px;
-    border-radius: 10%;
-    margin: 0 5px;
-}
 
-#statusIcons p {
-    color: #ffffff;
-    font-size: 0.9em;
-    margin-top: 5px;
-}
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            max-height: 300px; /* Limit the maximum height */
+            border-radius: 8px; /* Rounded corners for image */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect for image */
+        }
 
-#processingIcon, #completedIcon, #errorIcon {
-    display: none;
-}
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px; /* Space between buttons */
+        }
 
-/* Media Queries for Mobile Devices */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 1.2em;
-    }
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px; /* More rounded corners for buttons */
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect for buttons */
+        }
 
-    .description, .image-title, #walletAddress, button {
-        font-size: 0.9em;
-    }
+        button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+        }
 
-    #connectWalletButton, #mintButton {
-        font-size: 0.9em;
-    }
-}
-	    /* Add this to your existing CSS */
-.hue-effect {
-    animation: hueShift 5s linear infinite; /* Animation for hue effect */
-}
+        button:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+            box-shadow: none; /* No shadow for disabled button */
+        }
 
-@keyframes hueShift {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-}
+        .loading {
+            display: none;
+            margin-top: 20px;
+            font-size: 1em;
+            color: #333;
+        }
 
+        .message {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            header, footer {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.2em;
+            }
+
+            h2 {
+                font-size: 1em;
+            }
+
+            button {
+                font-size: 0.9em;
+                padding: 10px 20px;
+            }
+
+            .container {
+                padding: 60px 10px 50px; /* Adjust padding for mobile */
+            }
+
+            img {
+                max-height: 200px; /* Reduce max-height for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>NFTFANS Token</h1>
-        <div class="header-content">
-            <div class="wallet-info">
-                <button id="connectWalletButton">
-                    <img id="walletIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/wallet.gif" alt="Wallet Icon">
-                    <strong>Connect Wallet</strong>
-
-                </button>
-                <p id="walletAddress">Not connected <br> Switch to Polygon Network in your wallet </p>
-            </div>
-        </div>
+        <h1>NFT Fans Token</h1>
     </header>
+
     <div class="container">
-        <h1>NFTFANS 1KT ART 01</h1>
-        <p class="description">You will get this NFT + 1KT $NFTFAN Tokens! <br> We recommend Metamask wallet. <br> Tokens will show up after 5 min. </p>
-	    
-	    <img id="nftImage" src="https://pbs.twimg.com/media/GWSh6jFWkAARGmN?format=jpg&name=medium" alt="NFT Image">
-        <button id="mintButton" disabled>Mint NFT</button>
-        <div id="statusIcons">
-            <img id="processingIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/process.gif" alt="Processing">
-            <img id="completedIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/confetti.gif" alt="Completed">
-            <img id="errorIcon" src="https://raw.githubusercontent.com/nftfan/nftz/main/no-violence.gif" alt="Error">
-            <p id="statusText"></p>
+        <h1></h1>
+        <h3> You can claim 2.5B $NFTFAN grant everyday for free. </h3>
+        <h3>Make sure you have some $matic in your wallet for gas fee. </h3>
+         <h3>Switch to Polygon Network in your MetaMask before claiming. </h3>
+        <img src="https://raw.githubusercontent.com/nftfan/24h/main/2.5B%20%24NFTFAN.png" alt="2.5B $NFTFAN Daily Grants">
+        <div class="button-container">
+            <button id="connectWallet">Connect Wallet</button>
+            <button id="claimTokens" disabled>Claim Tokens</button>
         </div>
-        <form id="buyForm">
-            <input type="hidden" id="tokenId" value="1">
-            <input type="hidden" id="amount" value="1">
-        </form>
+        <div id="loading" class="loading">Processing...it can take 30s</div>
+        <div id="message" class="message"></div>
     </div>
+
     <footer>
-        <p>&copy; 2024 NFTFANS. All rights reserved.</p>
+        <p>&copy; 2024 NFT Fans Token. All rights reserved.</p>
     </footer>
 
-    <script>
-    const contractAddress = '0x3e6E1F0e21A6521eE69baceEBA22e7CeCe42eb1c'; 
-    const abi = [
-        "function buyNFT(uint256 _tokenId, uint256 _amount) external payable",
-        "function tokenPrice() external view returns (uint256)"
-    ];
-
+   <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+<script type="text/javascript">
     let provider;
-    let contract;
-    let signer;
+let signer;
+let contract;
 
-    async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send('eth_requestAccounts', []);
+const contractAddress = "0xFB51789AAdC64a935Eeb2461D304Fd0F88f3A584"; // Your contract address
+const contractABI = [
+    "function claimTokens() external",
+    "function lastClaimedTime(address) view returns (uint256)",
+    "function claimInterval() view returns (uint256)"
+];
+
+document.getElementById("connectWallet").onclick = async () => {
+    await connectWallet();
+};
+
+document.getElementById("claimTokens").onclick = async () => {
+    await claimTokens();
+};
+
+function updateMessage(message) {
+    document.getElementById("message").innerText = message;
+}
+
+async function connectWallet() {
+    const loadingElement = document.getElementById("loading");
+    loadingElement.style.display = "block";
+    updateMessage('');
+
+    try {
+        // Check if any Ethereum wallet is available
+        if (typeof window.ethereum !== "undefined" || typeof window.bitkeep !== "undefined") {
+            if (window.bitkeep && window.bitkeep.ethereum) {
+                // Use BitKeep Wallet provider
+                provider = new ethers.providers.Web3Provider(window.bitkeep.ethereum);
+            } else if (window.ethereum.isMetaMask) {
+                // Use MetaMask provider
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+            } else if (window.ethereum.isBitgetWallet || window.ethereum.isBitget) {
+                // Use Bitget Wallet provider
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+            } else {
+                updateMessage("Please install MetaMask, Bitget Wallet, BitKeep Wallet, or another compatible wallet.");
+                return;
+            }
+
+            // Request account access
+            await provider.send("eth_requestAccounts", []);
             signer = provider.getSigner();
-            const address = await signer.getAddress();
-            
-            // Update wallet address display
-            document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+            contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-            // Enable the mint button and add hue effect
-            const mintButton = document.getElementById('mintButton');
-            const connectWalletButton = document.getElementById('connectWalletButton');
-            
-            mintButton.classList.add('enabled', 'hue-effect'); // Add hue effect class
-            connectWalletButton.classList.add('hue-effect'); // Add hue effect class
-            mintButton.disabled = false;
-
-            // Hide status icons initially
-            document.getElementById('statusIcons').style.display = 'none';
-
-            // Change wallet icon and button text
-            const walletIcon = document.getElementById('walletIcon');
-            walletIcon.src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
-            walletIcon.onload = () => {
-                console.log('Wallet icon loaded successfully');
-            };
-            walletIcon.onerror = () => {
-                console.error('Failed to load wallet icon');
-            };
-            
-            connectWalletButton.innerHTML = '<strong>Connected</strong>';
-            connectWalletButton.style.backgroundColor = '#238636'; // Change button color
-
-            // Initialize contract
-            contract = new ethers.Contract(contractAddress, abi, signer);
-
-        } catch (error) {
-            console.error('Failed to connect wallet:', error);
-            alert('Failed to connect wallet. Check the console for details.');
+            document.getElementById("claimTokens").disabled = false;
+            updateMessage("Wallet connected.");
+        } else {
+            updateMessage("No Ethereum wallet detected. Please install MetaMask, Bitget Wallet, BitKeep Wallet, or another compatible wallet.");
         }
-    } else {
-        alert('MetaMask is not installed. Please install MetaMask and try again.');
+    } catch (error) {
+        console.error("Error connecting wallet:", error);
+        updateMessage("Failed to connect wallet. Please check your wallet or browser.");
+    } finally {
+        loadingElement.style.display = "none";
     }
 }
 
+async function claimTokens() {
+    const loadingElement = document.getElementById("loading");
+    loadingElement.style.display = "block";
+    updateMessage('');
 
+    try {
+        const address = await signer.getAddress();
+        const lastClaimedTime = await contract.lastClaimedTime(address);
+        const claimInterval = await contract.claimInterval();
+        const currentTime = Math.floor(Date.now() / 1000);
 
-    async function handleMint() {
-        const tokenId = parseInt(document.getElementById('tokenId').value, 10);
-        const amount = parseInt(document.getElementById('amount').value, 10);
-
-        try {
-            document.getElementById('statusIcons').style.display = 'block'; // Show status icons during transaction
-            document.getElementById('processingIcon').style.display = 'inline'; // Show processing icon
-            document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
-            document.getElementById('errorIcon').style.display = 'none'; // Hide error icon
-            document.getElementById('statusText').innerText = 'Please wait for 30s';
-
-            const pricePerToken = await contract.tokenPrice();
-            const totalPrice = pricePerToken.mul(amount);
-
-            const tx = await contract.buyNFT(tokenId, amount, { value: totalPrice });
-            await tx.wait();  
-
-            document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
-            document.getElementById('completedIcon').style.display = 'inline'; // Show completed icon
-            document.getElementById('statusText').innerText = 'Transaction successful!';
-            
-            // Hide status icons after a short delay
-            setTimeout(() => {
-                document.getElementById('statusIcons').style.display = 'none';
-            }, 3000);
-        } catch (error) {
-            console.error('Transaction error:', error);
-            document.getElementById('processingIcon').style.display = 'none'; // Hide processing icon
-            document.getElementById('completedIcon').style.display = 'none'; // Hide completed icon
-            document.getElementById('errorIcon').style.display = 'inline'; // Show error icon
-            document.getElementById('statusText').innerText = 'Transaction failed!';
-            
-            // Hide status icons after a short delay
-            setTimeout(() => {
-                document.getElementById('statusIcons').style.display = 'none';
-            }, 3000);
+        if (currentTime >= lastClaimedTime.toNumber() + claimInterval.toNumber()) {
+            const tx = await contract.claimTokens();
+            await tx.wait();
+            updateMessage("Tokens claimed successfully!");
+        } else {
+            const nextClaimTime = new Date((lastClaimedTime.toNumber() + claimInterval.toNumber()) * 1000);
+            updateMessage(`You can claim tokens again after ${nextClaimTime.toLocaleString()}`);
         }
+    } catch (error) {
+        console.error("Error claiming tokens:", error);
+        updateMessage("Failed to claim tokens. See console for details.");
+    } finally {
+        loadingElement.style.display = "none";
     }
+}
 
-    function init() {
-        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
-        document.getElementById('mintButton').addEventListener('click', handleMint);
-    }
-
-    init();
 </script>
+
 
 </body>
 </html>
