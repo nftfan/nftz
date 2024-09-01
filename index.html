@@ -317,47 +317,33 @@ h1 {
             // Update wallet address display
             document.getElementById('walletAddress').innerText = `Connected: ${address}`;
 
-            // Enable the mint button and add hue effect
+            // Enable the mint button
             const mintButton = document.getElementById('mintButton');
-            const connectWalletButton = document.getElementById('connectWalletButton');
-            const openInMetaMaskButton = document.querySelector('.tab-button');
-            
-            mintButton.classList.add('enabled', 'hue-effect'); // Add hue effect class
-            connectWalletButton.classList.add('hue-effect'); // Add hue effect class
+            mintButton.classList.add('enabled');
             mintButton.disabled = false;
 
             // Hide status icons initially
             document.getElementById('statusIcons').style.display = 'none';
 
-            // Change wallet icon and button text
-            const walletIcon = document.getElementById('walletIcon');
-            walletIcon.src = 'https://raw.githubusercontent.com/nftfan/nftz/main/cloud.gif'; // Change icon when connected
-            walletIcon.onload = () => {
-                console.log('Wallet icon loaded successfully');
-            };
-            walletIcon.onerror = () => {
-                console.error('Failed to load wallet icon');
-            };
-            
+            // Change button text
+            const connectWalletButton = document.getElementById('connectWalletButton');
             connectWalletButton.innerHTML = '<strong>Connected</strong>';
             connectWalletButton.style.backgroundColor = '#238636'; // Change button color
-
-            // Hide "Open in MetaMask" button
-            if (openInMetaMaskButton) {
-                openInMetaMaskButton.style.display = 'none';
-            }
 
             // Initialize contract
             contract = new ethers.Contract(contractAddress, abi, signer);
 
         } catch (error) {
-            console.error('Failed to connect wallet:', error);
+            // Improved error logging and handling
+            console.error('Error connecting wallet:', error);
+            document.getElementById('walletAddress').innerText = 'Failed to connect wallet. Check the console for details.';
             alert('Failed to connect wallet. Check the console for details.');
         }
     } else {
         alert('MetaMask is not installed. Please install MetaMask and try again.');
     }
 }
+
 
 
     async function handleMint() {
