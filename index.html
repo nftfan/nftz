@@ -621,35 +621,30 @@ h1 {
     let signer;
 
    async function connectWallet() {
-    if (typeof window.ethereum !== 'undefined' || typeof window.web3 !== 'undefined') {
+    if (window.ethereum && window.ethereum.isMetaMask) {
         try {
-            // Initialize provider
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-            // Request user to connect MetaMask
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-            // Get the signer
-            const signer = provider.getSigner();
+            // Initialize provider and signer
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send('eth_requestAccounts', []);
+            signer = provider.getSigner();
             const address = await signer.getAddress();
-
-            // Update UI
+            
+            // Update wallet address display and other UI elements
             updateUIOnSuccess(address);
 
-            // Initialize contract with signer
+            // Initialize contract
             contract = new ethers.Contract(contractAddress, abi, signer);
 
-            console.log('Connected wallet:', address);
+            // Optionally handle tab-button
+            const openInMetaMaskButton = document.querySelector('.tab-button');
+            if (openInMetaMaskButton) {
+                openInMetaMaskButton.style.display = 'none'; // Hide the button
+            }
 
         } catch (error) {
-            // Log detailed error to console
-            console.error('Error connecting to MetaMask:', error);
-
-            // Display a user-friendly message
-            alert('Failed to connect MetaMask. Please make sure MetaMask is installed and connected.');
+            handleConnectionError(error);
         }
     } else {
-        // MetaMask is not available
         alert('MetaMask is not installed. Please install MetaMask and try again.');
     }
 }
