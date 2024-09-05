@@ -623,31 +623,26 @@ h1 {
     async function connectWallet() {
     if (window.ethereum && window.ethereum.isMetaMask) {
         try {
+            // Request accounts
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+
             // Initialize provider and signer
             provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send('eth_requestAccounts', []);
             signer = provider.getSigner();
+
             const address = await signer.getAddress();
-            
-            // Update wallet address display and other UI elements
-            updateUIOnSuccess(address);
+            updateUIOnSuccess(address);  // Display address on UI
 
             // Initialize contract
             contract = new ethers.Contract(contractAddress, abi, signer);
-
-            // Optionally handle tab-button
-            const openInMetaMaskButton = document.querySelector('.tab-button');
-            if (openInMetaMaskButton) {
-                openInMetaMaskButton.style.display = 'none'; // Hide the button
-            }
-
         } catch (error) {
-            handleConnectionError(error);
+            console.error('Failed to connect wallet:', error);
         }
     } else {
-        alert('MetaMask is not installed. Please install MetaMask and try again.');
+        alert('Please install MetaMask.');
     }
 }
+
 
 function updateUIOnSuccess(address) {
     document.getElementById('walletAddress').innerText = `Connected: ${address}`;
@@ -735,4 +730,3 @@ function handleConnectionError(error) {
 </script>
 </body>
 </html>
-
