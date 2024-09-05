@@ -1,51 +1,109 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://raw.githubusercontent.com/nftfan/MENU/main/grants/FANS%20(1).png" type="image/png">
-    <title>NFTFANS 1KT ART</title>
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-
-    <!-- Twitter Card metadata -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NFTFANS 1KT ART">
-    <meta name="twitter:description" content="Each 1KT ART NFT comes with 1KT $NFTFAN Tokens.">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/nftfan/MENU/main/grants/1KT.png">
-    <meta name="twitter:url" content="https://www.nftfanstoken.com/1kt/">
-    
+    <title>Rectangle Wallet Mapping</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-       body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #000;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    overflow-x: hidden;
-    min-width: 350px;
-}
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            filter: invert(100%) hue-rotate(180deg); /* Inverts colors and adjusts hue to correct colors */
+        }
 
-header {
+        #map {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #search-container {
+            position: absolute;
+            top: 10px; /* Distance from the top */
+            left: 50%;
+            transform: translateX(-50%); /* Center horizontally */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            background: #fff; /* Ensure the background is white for visibility */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #search-box {
+            width: 200px; /* Adjust the width as needed */
+            margin-right: 10px;
+            padding: 5px;
+            background: #fff; /* Ensure the search box background is white for visibility */
+            color: #000; /* Ensure text color is black for visibility */
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        #search-button {
+            cursor: pointer;
+            background: #007bff; /* Button background color */
+            color: #fff; /* Button text color */
+            border: none;
+            padding: 5px 10px; /* Smaller padding */
+            border-radius: 3px;
+            font-size: 14px; /* Smaller text size */
+        }
+
+        #search-button:hover {
+            background: #0056b3; /* Darker shade on hover */
+        }
+
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-content input {
+            margin-bottom: 10px;
+            background: #fff; /* Ensure the input background is white for visibility */
+            color: #000; /* Ensure text color is black for visibility */
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .popup-content button {
+            cursor: pointer;
+            background: #007bff; /* Button background color */
+            color: #fff; /* Button text color */
+            border: none;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .popup-content button:hover {
+            background: #0056b3; /* Darker shade on hover */
+        }
+		
+		header {
     width: 100%;
-    background-color: #222;
-    color: #00ff99; /* Neon green */
+    background-color: #bc0000; /* Slightly lighter dark color */
+    color: #e0e0e0;
     padding: 20px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-bottom: 2px solid #00ff99;
+    border-bottom: 1px solid #333;
 }
 
 header h1 {
-    font-size: 2em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
     margin: 0;
-    text-shadow: 0 0 10px #00ff99; /* Neon glow effect */
-    background: linear-gradient(45deg, rgba(0,255,153,0.3), rgba(0,255,153,0.1));
+    color: #e0e0e0;
     padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
 }
 
 .header-content {
@@ -62,58 +120,56 @@ header h1 {
 #connectWalletButton {
     display: flex;
     align-items: center;
-    background-color: #00ff99; /* Neon green */
-    color: #000;
-    padding: 15px 35px;
-    font-size: 1.1em;
-    border: none;
-    border-radius: 8px;
+    background-color: #ffd662; /* Dark button background */
+    color: #000000;
+    padding: 10px 20px;
+    font-size: 14px; /* Smaller font size */
+    border: 1px solid #444; /* Subtle border */
+    border-radius: 50px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.3s;
     position: relative;
     overflow: hidden;
-    min-width: 200px;
+    min-width: 150px;
 }
 
 #connectWalletButton img {
     position: absolute;
     left: 10px;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 24px;
+    height: 24px;
 }
 
 #connectWalletButton:hover {
-    background-color: #00cc88; /* Slightly darker neon green */
-    transform: scale(1.05);
+    background-color: #444; /* Slightly lighter dark */
+    transform: scale(1.02);
 }
 
 #walletAddress {
     font-size: 12px;
-    color: #00ff99;
+    color: #e0e0e0;
     margin: 5px 0;
-    background: rgba(0, 255, 153, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     padding: 5px 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 8px rgba(0, 255, 153, 0.5);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 footer {
     width: 100%;
     text-align: center;
-    background-color: #222;
-    color: #00ff99;
+    background-color: #bc0000;
+    color: #e0e0e0;
     padding: 15px 0;
     margin-top: auto;
-    border-top: 2px solid #00ff99;
+    border-top: 1px solid #333;
 }
 
 .container {
-    background: linear-gradient(45deg, #ff00cc, #00ffff, #ff00cc, #00ffff);
-    background-size: 400% 400%;
-    animation: gradientShift 5s linear infinite;
-    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
-    border-radius: 15px;
+    position: relative; /* Make sure the container is a positioning context for its children */
+    background: #1c1c1c; /* Uniform dark background */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
     padding: 20px;
     text-align: center;
     width: 350px;
@@ -121,40 +177,46 @@ footer {
     box-sizing: border-box;
 }
 
-@keyframes gradientShift {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 100% 100%; }
-    100% { background-position: 0% 0%; }
-}
-
 h1 {
-    font-size: 2em;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
     margin-bottom: 10px;
-    color: #00ff99;
-    text-shadow: 0 0 10px #00ff99;
-    background: linear-gradient(45deg, rgba(0,255,153,0.3), rgba(0,255,153,0.1));
-    padding: 10px 20px;
-    border-radius: 8px;
+    color: #e0e0e0;
 }
 
 .description {
-    font-size: 14px;
-    color: #00ffff;
+    font-size: 11px;
+    color: #e0e0e0;
     margin-bottom: 20px;
-    background: rgba(0, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
     padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
 }
 
 #nftImage {
     width: 100%;
     height: auto;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-bottom: 10px;
-    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    position: relative; /* Make sure the image is positioned relative to its container */
 }
+
+.image-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6); /* Soft black transparent background */
+    color: #e0e0e0; /* Light text color for contrast */
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    padding: 5px;
+    border-top-right-radius: 6px; /* Rounded corner to match container style */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
 
 .mint-section {
     display: flex;
@@ -163,40 +225,40 @@ h1 {
 }
 
 .mint-section label {
-    color: #00ffff;
+    color: #e0e0e0;
     margin-right: 10px;
 }
 
 .mint-section input {
     padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #00ffff;
+    border-radius: 4px;
+    border: 1px solid #444;
     margin-right: 10px;
     max-width: 80px;
-    background-color: #111;
-    color: #00ffff;
+    background-color: #333;
+    color: #e0e0e0;
 }
 
 #mintButton {
-    padding: 12px 25px;
-    font-size: 1em;
-    border: none;
-    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 12px;
+    border: 1px solid #444;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
-    background-color: #00ffff; /* Neon cyan */
-    color: #000;
-    font-weight: bold;
+    background-color: #333; /* Dark button background */
+    color: #e0e0e0;
+    font-weight: 500;
     flex-grow: 1;
 }
 
 #mintButton.enabled {
-    background-color: #00ccff;
-    color: #000;
+    background-color: #38ccbe;
+    color: #e0e0e0;
 }
 
 #mintButton.enabled:hover {
-    background-color: #00b3e6;
+    background-color: #555;
 }
 
 #statusIcons {
@@ -206,15 +268,15 @@ h1 {
 }
 
 #statusIcons img {
-    width: 50px;
-    height: 50px;
-    border-radius: 10%;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
     margin: 0 5px;
 }
 
 #statusIcons p {
-    color: #00ffff;
-    font-size: 0.9em;
+    color: #e0e0e0;
+    font-size: 12px;
     margin-top: 5px;
 }
 
@@ -225,36 +287,47 @@ h1 {
 .tab-button {
     display: inline-block;
     text-decoration: none;
-    color: #00ffff;
-    background-color: #111;
-    border: 1px solid #00ffff;
+    color: #e0e0e0;
+    background-color: #5a93f5;
+    border: 1px solid #444;
     border-radius: 50px;
-    padding: 12px 24px;
+    padding: 8px 16px;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 500;
     text-align: center;
     transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
     margin-top: 10px;
 }
 
 .tab-button:hover {
-    background-color: #00ffff;
-    color: #000;
-    border-color: #00ffff;
-    transform: scale(1.05);
+    background-color: #444;
+    color: #e0e0e0;
+    border-color: #555;
+    transform: scale(1.02);
 }
 
 .tab-button:active {
-    background-color: #00b3e6;
-    border-color: #00b3e6;
+    background-color: #555;
+    border-color: #666;
 }
 
+#logo-container svg {
+  width: 100px;
+  height: auto;
+}
 
+@media only screen and (max-width: 768px) {
+  #logo-container svg {
+    width: 150px;
+    height: auto;
+  }  
+}
     </style>
 </head>
 <body>
-    <header>
-        <h1>NFTFANS Token</h1>
+<header>
+        <h1>NFTFANS 1KT ART</h1>
+		<div id="logo-container"></div>
 		
         <div class="header-content">
             <div class="wallet-info">
@@ -262,14 +335,11 @@ h1 {
                    
                     <strong>Connect Wallet</strong>
                 </button>
-                <p id="walletAddress">Not connected <br> Switch to Polygon Network in your wallet </p>
-				<p class="description">You will get this NFT + 1KT $NFTFAN Tokens! <br> We recommend Metamask wallet. <br> Tokens will show up after 5 min.</p>
-				<h1> Price: 1 $MATIC </h1>
-                <a href="https://metamask.app.link/dapp/https://www.nftfanstoken.com/1ktd" target="_blank" class="tab-button">Open in MetaMask</a>
-            </div>
-        </div>
-		<div class="mint-section">
-            <label for="tokenId">Enter Token ID:</label>
+                
+				
+				<h1> Enter a random token ID of 4 digits i.e. 6587 </h1>
+					<div class="mint-section">
+            <label for="tokenId"> <strong> Enter Token ID: </strong> </label>
             <input type="number" id="tokenId" placeholder="Token ID">
             <button id="mintButton" disabled>Mint Now</button>
         </div>
@@ -280,23 +350,266 @@ h1 {
             <p id="statusMessage"></p>
         </div>	 
     </header>
-    <div class="container">
-	    
-        <h1>Token ID: 1 </h1>
-       
-        
-        <img id="nftImage" src="https://pbs.twimg.com/media/GWSh6jFWkAARGmN?format=jpg&name=medium" alt="NFT Image">
-
-        
-
-       
+    <div id="search-container">
+        <input type="text" id="search-box" placeholder="Enter wallet address" />
+        <button id="search-button">Search</button>
     </div>
-    
-    <footer>
-        <p>© 2023 NFTFANS - All Rights Reserved</p>
-    </footer>
+    <div id="map"></div>
 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.140.0.min.js"></script>
     <script>
+        AWS.config.update({
+            region: 'eu-north-1', // Replace with your AWS region
+            credentials: new AWS.Credentials('AKIAVRUVVVUM65TIIUHH', 'ZkGMefa8j6JcqV7y3CF/5cNSP9hwKn7FoQrkEm3y')
+        });
+
+        var dynamoDB = new AWS.DynamoDB.DocumentClient();
+        var tableName = 'solfan'; // Replace with your DynamoDB table name
+
+        var map = L.map('map', {
+            center: [0, 0],
+            zoom: 3,
+            maxBounds: L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180))
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            noWrap: true
+        }).addTo(map);
+
+        var drawnRectangles = []; // Array to hold rectangles with associated wallet addresses
+
+        function fetchAndDisplayRectangles() {
+            var params = {
+                TableName: tableName
+            };
+
+            dynamoDB.scan(params, function(err, data) {
+                if (err) {
+                    console.error('Unable to fetch rectangles from DynamoDB:', err);
+                    return;
+                }
+
+                console.log('Fetched items:', data.Items);
+
+                // Clear the previously displayed rectangles
+                drawnRectangles.forEach(function(item) {
+                    map.removeLayer(item.rectangle);
+                });
+
+                drawnRectangles = []; // Reset the array
+
+                data.Items.forEach(function(item) {
+                    if (item.wallet) { // Only add rectangles with an attached wallet
+                        var boundsArray = item.bounds.split(',');
+                        var bounds = L.latLngBounds(
+                            [parseFloat(boundsArray[1]), parseFloat(boundsArray[0])],
+                            [parseFloat(boundsArray[3]), parseFloat(boundsArray[2])]
+                        );
+                        var wallet = item.wallet;
+                        var dateOfPurchase = new Date(item.dateOfPurchase);
+                        var currentPrice = calculatePrice(dateOfPurchase);
+
+                        var rectangle = L.rectangle(bounds, { color: '#ff7800', weight: 1, fillOpacity: 0.2 }).addTo(map);
+                        rectangle.bindPopup(`
+                            <b>Wallet Address:</b> ${wallet}<br>
+                            <b>Date of Purchase:</b> ${dateOfPurchase.toLocaleDateString()}<br>
+                            <b>Price:</b> ${currentPrice.toLocaleString()} $nftfan<br>
+                            <button onclick="window.open('https://www.nftfanstoken.com/areanft/rewards.html')">Cash Out</button>
+                        `);
+
+                        drawnRectangles.push({ rectangle: rectangle, wallet: wallet, dateOfPurchase: dateOfPurchase });
+                    }
+                });
+            });
+        }
+
+        window.onload = function() {
+            fetchAndDisplayRectangles();
+            setInterval(updatePrices, 1000); // Update prices every second
+        };
+
+        var isDrawing = false;
+        var currentRectangle = null;
+        var currentBounds = null;
+
+        // Fixed area of the square in meters (1000 m²)
+        var fixedAreaMeters = 1000;
+
+        // Convert size in meters to latitude/longitude degrees
+        function metersToDegrees(meters) {
+            var earthCircumference = 40008000; // in meters
+            var degrees = (meters / earthCircumference) * 360;
+            return degrees;
+        }
+
+        // Get the side length of the square with fixed area in degrees
+        function getSquareSideLengthDegrees() {
+            var sideLengthMeters = Math.sqrt(fixedAreaMeters); // Side length in meters
+            return metersToDegrees(sideLengthMeters);
+        }
+
+        function updateMapBounds() {
+            return map.getBounds();
+        }
+
+        function calculatePrice(dateOfPurchase) {
+            var now = new Date();
+            var elapsedSeconds = Math.floor((now - dateOfPurchase) / 1000);
+            var startingPrice = 1000000000000; // Starting price in tokens
+            var priceIncrementPerSecond = 1000000000000 / (24 * 60 * 60); // Increase per second
+            return startingPrice + (elapsedSeconds * priceIncrementPerSecond);
+        }
+
+        function updatePrices() {
+            drawnRectangles.forEach(function(item) {
+                var currentPrice = calculatePrice(item.dateOfPurchase);
+                item.rectangle.bindPopup(`
+                    <b>Wallet Address:</b> ${item.wallet}<br>
+                    <b>Date of Purchase:</b> ${item.dateOfPurchase.toLocaleDateString()}<br>
+                    <b>Price:</b> ${currentPrice.toLocaleString()} $nftfan<br>
+                    <button onclick="window.open('https://www.nftfanstoken.com/areanft/rewards.html')">Cash Out</button>
+                `);
+            });
+        }
+
+        map.on('click', function(e) {
+            if (isDrawing) {
+                return;
+            }
+
+            var mapBounds = updateMapBounds();
+            var latlng = e.latlng;
+            var size = getSquareSideLengthDegrees(); // Get side length in degrees
+
+            // Define the potential rectangle bounds
+            var potentialBounds = L.latLngBounds(
+                [latlng.lat - size / 2, latlng.lng - size / 2],
+                [latlng.lat + size / 2, latlng.lng + size / 2]
+            );
+
+            // Constrain potentialBounds to the map bounds
+            potentialBounds = L.latLngBounds(
+                L.latLng(
+                    Math.max(potentialBounds.getSouthWest().lat, mapBounds.getSouthWest().lat),
+                    Math.max(potentialBounds.getSouthWest().lng, mapBounds.getSouthWest().lng)
+                ),
+                L.latLng(
+                    Math.min(potentialBounds.getNorthEast().lat, mapBounds.getNorthEast().lat),
+                    Math.min(potentialBounds.getNorthEast().lng, mapBounds.getNorthEast().lng)
+                )
+            );
+
+            // Check if the constrained rectangle is valid
+            if (potentialBounds.isValid()) {
+                currentBounds = potentialBounds;
+
+                currentRectangle = L.rectangle(currentBounds, { color: '#ff7800', weight: 1, fillOpacity: 0.2 }).addTo(map);
+
+                isDrawing = true;
+
+                currentRectangle.on('click', function() {
+                    var popupContent = document.createElement('div');
+                    popupContent.className = 'popup-content';
+                    popupContent.innerHTML = `
+                        <input type="text" id="wallet-input" placeholder="Enter wallet address" />
+                        <button id="wallet-submit">Submit</button>
+                    `;
+                    var popup = L.popup()
+                        .setLatLng(e.latlng)
+                        .setContent(popupContent)
+                        .openOn(map);
+
+                    document.getElementById('wallet-submit').addEventListener('click', function() {
+                        var walletAddress = document.getElementById('wallet-input').value.trim();
+                        var walletRegex = /^0x[a-fA-F0-9]{40}$/; // Regex for validating wallet address
+
+                        if (walletRegex.test(walletAddress)) {
+                            var solfanKey = walletAddress + new Date().getTime(); // Generate a unique key
+                            saveRectangleToDynamoDB(solfanKey, walletAddress, currentBounds);
+
+                            currentRectangle.setStyle({ color: '#00ff00', weight: 2, fillOpacity: 0.5 });
+                            currentRectangle.bindPopup(`
+                                <b>Wallet Address:</b> ${walletAddress}<br>
+                                <b>Date of Purchase:</b> ${new Date().toLocaleDateString()}<br>
+                                <b>Price:</b> ${calculatePrice(new Date()).toLocaleString()} $nftfan<br>
+                                <button onclick="window.open('https://nftfanstoken.com')">Cash Out</button>
+                            `).openPopup();
+
+                            drawnRectangles.push({ rectangle: currentRectangle, wallet: walletAddress, dateOfPurchase: new Date() });
+
+                            map.fitBounds(currentRectangle.getBounds()); // Zoom to the new rectangle
+
+                            isDrawing = false;
+                            currentRectangle = null;
+                            currentBounds = null;
+
+                            map.closePopup();
+                        } else {
+                            alert('Please enter a valid wallet address.');
+                        }
+                    });
+                });
+            } else {
+                alert('The rectangle extends outside the map boundaries.');
+            }
+        });
+
+        function saveRectangleToDynamoDB(solfanKey, wallet, bounds) {
+            var dateOfPurchase = new Date().toISOString(); // Get the current date and time
+
+            var params = {
+                TableName: tableName,
+                Item: {
+                    solfan: solfanKey, // Include the primary key attribute
+                    wallet: wallet,
+                    bounds: bounds.toBBoxString(),
+                    timestamp: dateOfPurchase, // Save the date of purchase
+                    dateOfPurchase: dateOfPurchase, // Save the date of purchase separately
+                    startingPrice: 1000000000000 // Starting price in tokens
+                }
+            };
+
+            console.log('Saving to DynamoDB:', params);
+
+            dynamoDB.put(params, function(err, data) {
+                if (err) {
+                    console.error('Error saving rectangle to DynamoDB:', err);
+                    alert('Error saving rectangle to DynamoDB: ' + err.message);
+                } else {
+                    console.log('Successfully saved rectangle to DynamoDB:', wallet);
+                }
+            });
+        }
+
+        function searchRectangleByWallet(wallet) {
+            var boundsArray = [];
+            drawnRectangles.forEach(function(item) {
+                if (item.wallet === wallet) {
+                    item.rectangle.setStyle({ color: '#00ff00', weight: 2, fillOpacity: 0.5 });
+                    item.rectangle.openPopup();
+                    boundsArray.push(item.rectangle.getBounds());
+                } else {
+                    item.rectangle.setStyle({ color: '#ff7800', weight: 1, fillOpacity: 0.2 });
+                }
+            });
+
+            if (boundsArray.length > 0) {
+                var bounds = L.latLngBounds(boundsArray.flat());
+                map.fitBounds(bounds);
+            } else {
+                alert('No rectangles found for wallet address: ' + wallet);
+            }
+        }
+
+        document.getElementById('search-button').addEventListener('click', function() {
+            var searchTerm = document.getElementById('search-box').value.trim();
+            if (searchTerm) {
+                searchRectangleByWallet(searchTerm);
+            }
+        });
+    </script>
+	<script>
     const contractAddress = '0x3e6E1F0e21A6521eE69baceEBA22e7CeCe42eb1c'; 
     const abi = [
         "function buyNFT(uint256 _tokenId, uint256 _amount) external payable",
@@ -308,42 +621,51 @@ h1 {
     let signer;
 
     async function connectWallet() {
-    if (window.ethereum) {
+    if (window.ethereum && window.ethereum.isMetaMask) {
         try {
+            // Initialize provider and signer
             provider = new ethers.providers.Web3Provider(window.ethereum);
             await provider.send('eth_requestAccounts', []);
             signer = provider.getSigner();
             const address = await signer.getAddress();
             
-            // Update wallet address display
-            document.getElementById('walletAddress').innerText = `Connected: ${address}`;
-
-            // Enable the mint button
-            const mintButton = document.getElementById('mintButton');
-            mintButton.classList.add('enabled');
-            mintButton.disabled = false;
-
-            // Hide status icons initially
-            document.getElementById('statusIcons').style.display = 'none';
-
-            // Change button text
-            const connectWalletButton = document.getElementById('connectWalletButton');
-            connectWalletButton.innerHTML = '<strong>Connected</strong>';
-            connectWalletButton.style.backgroundColor = '#238636'; // Change button color
+            // Update wallet address display and other UI elements
+            updateUIOnSuccess(address);
 
             // Initialize contract
             contract = new ethers.Contract(contractAddress, abi, signer);
 
+            // Optionally handle tab-button
+            const openInMetaMaskButton = document.querySelector('.tab-button');
+            if (openInMetaMaskButton) {
+                openInMetaMaskButton.style.display = 'none'; // Hide the button
+            }
+
         } catch (error) {
-            // Improved error logging and handling
-            console.error('Error connecting wallet:', error);
-            document.getElementById('walletAddress').innerText = 'Failed to connect wallet. Check the console for details.';
-            alert('Failed to connect wallet. Check the console for details.');
+            handleConnectionError(error);
         }
     } else {
         alert('MetaMask is not installed. Please install MetaMask and try again.');
     }
 }
+
+function updateUIOnSuccess(address) {
+    document.getElementById('walletAddress').innerText = `Connected: ${address}`;
+    const mintButton = document.getElementById('mintButton');
+    mintButton.classList.add('enabled');
+    mintButton.disabled = false;
+    document.getElementById('statusIcons').style.display = 'none';
+    const connectWalletButton = document.getElementById('connectWalletButton');
+    connectWalletButton.innerHTML = '<strong>Connected</strong>';
+    connectWalletButton.style.backgroundColor = '#238636'; // Change button color
+}
+
+function handleConnectionError(error) {
+    console.error('Error connecting wallet:', error);
+    document.getElementById('walletAddress').innerText = 'Failed to connect wallet. Check the console for details.';
+    alert('Failed to connect wallet. Check the console for details.');
+}
+
 
 
 
@@ -384,7 +706,7 @@ h1 {
         // Hide status icons after a short delay
         setTimeout(() => {
             statusIcons.style.display = 'none';
-        }, 3000);
+        }, 6000);
     } catch (error) {
         console.error('Transaction error:', error);
         console.log('Transaction failed');
@@ -396,7 +718,7 @@ h1 {
         // Hide status icons after a short delay
         setTimeout(() => {
             document.getElementById('statusIcons').style.display = 'none';
-        }, 3000);
+        }, 6000);
     }
 }
 
@@ -409,7 +731,8 @@ h1 {
     }
 
     init();
-</script>
 
+</script>
 </body>
 </html>
+
