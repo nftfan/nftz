@@ -1,172 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbox</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-    .chatbox {
-      width: 360px;
-      max-width: 100%;
-      display: flex;
-      flex-direction: column;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
-    }
-    .chatbox-header {
-      background-color: #007bff;
-      color: #ffffff;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.2em;
-      font-weight: bold;
-    }
-    .chatbox-messages {
-      padding: 15px;
-      height: 300px;
-      overflow-y: auto;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    .message {
-      margin-bottom: 10px;
-    }
-    .message p {
-      margin: 0;
-      padding: 10px;
-      border-radius: 5px;
-      max-width: 75%;
-    }
-    .message.received p {
-      background-color: #e9ecef;
-      color: #333;
-      align-self: flex-start;
-    }
-    .message.sent p {
-      background-color: #007bff;
-      color: #ffffff;
-      align-self: flex-end;
-    }
-    .chatbox-input {
-      display: flex;
-      border-top: 1px solid #e0e0e0;
-      padding: 10px;
-    }
-    .chatbox-input input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #e0e0e0;
-      border-radius: 5px;
-      outline: none;
-    }
-    .chatbox-input button {
-      background-color: #007bff;
-      border: none;
-      color: #ffffff;
-      padding: 10px 15px;
-      margin-left: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .chatbox-input button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+    <link rel="icon" href="https://raw.githubusercontent.com/nftfan/delivery/main/Untitled%20design%20(22).png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Delivery</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+	 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f0f2f5;
+        }
+        #map {
+            height: 100vh;
+            width: 100vw;
+        }
+        .popup-content {
+            width: 200px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 2px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+        }
+		.popup-image {
+    display: block;
+    margin: 10px auto 0 auto; /* Center the image and add margin at the top */
+    width: 180px;
+    height: 100%;
+	margin-bottom: 3px;
+	border-radius: 4px;
+}
+        .popup-title {
+            background-color: #df3056;
+            color: #fff;
+            padding: 2px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .chat-box {
+            height: 200px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 7px;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-message {
+            margin-bottom: 4px;
+            font-size: 11px;
+            padding: 5px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #4c47ff; /* User message background color */
+            color: #ffffff;
+            align-self: flex-end;
+        }
+        .assistant-message {
+            background-color: #f1f1f1; /* Assistant message background color */
+            color: #333333;
+            align-self: flex-start;
+        }
+        .chat-input {
+            padding: 10px;
+            border: 1px solid #de2f55;
+            border-radius: 24px;
+            box-sizing: border-box;
+            font-size: 10px;
+            background-color: #f0f0f0;
+            width: 195px;
+        }
+        button {
+            width: calc(100% - 120px);
+            padding: 2px;
+            border: 1px solid #df3056;
+            border-radius: 24px;
+            background-color: #ffffff;
+            color: #df3056;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #f9f9f9;
+        }
+		 button2 {
+            width: calc(100% - 120px);
+            padding: 2px;
+            border: 1px solid #df3056;
+            border-radius: 24px;
+            background-color: #ffffff;
+            color: #df3056;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        button2:hover {
+            background-color: #f9f9f9;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        h1 {
+            text-align: center;
+            background-color: #df3056;
+            padding: 10px;
+            font-size: 12px;
+            margin: 0;
+            position: fixed;
+            width: 100%;
+            color: #ffffff;
+            z-index: 1000;
+        }
+        footer {
+            text-align: center;
+            background-color: #df3056;
+            padding: 4px;
+            font-size: 12px;
+            margin: 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            color: #ffffff;
+            z-index: 1000;
+        }
+        #search-container {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        #search-input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            width: 200px;
+        }
+        #search-button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        #search-button:hover {
+            background-color: #45a049;
+        }
+        @media only screen and (max-width: 600px) {
+            .popup-content {
+                font-size: 11px;
+            }
+            .popup-content textarea, .popup-content button, .chat-input {
+                font-size: 11px;
+            }
+            h1, footer {
+                font-size: 10px;
+                padding: 3px;
+            }
+            #search-input {
+                width: 150px;
+            }
+            #search-button {
+                font-size: 10px;
+            }
+        }
+        .cycling-icon {
+            border-radius: 0px;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            vertical-align: middle;
+            border: 1px solid #ffffff;
+        }
+		
+    </style>
 </head>
 <body>
-  <div class="chatbox">
-    <div class="chatbox-header">
-      <h3>Chat with Support</h3>
+    <h1>
+        <img src="https://raw.githubusercontent.com/nftfan/delivery/main/Untitled%20design%20(23)929292.png" alt="Cycling Icon" class="cycling-icon">
+        Pick & Bring Chat
+    </h1>
+    <div id="map"></div>
+    
+        
+       
     </div>
-    <div class="chatbox-messages" id="messages">
-      <!-- Messages will be appended here -->
-    </div>
-    <div class="chatbox-input">
-      <input type="text" id="userInput" placeholder="Type a message...">
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
 
-  <script type="module">
-    import Groq from "groq-sdk";
+    <footer>Click on any photo to start a chat.</footer>
 
-    const groq = new Groq();
-    const apiKey = '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';
-
-    async function sendMessage() {
-      const userInput = document.getElementById('userInput').value;
-      if (!userInput.trim()) return;
-
-      console.log('User input:', userInput);
-
-      // Append user message to chatbox
-      appendMessage(userInput, 'sent');
-
-      try {
-        const stream = await getGroqChatStream(userInput);
-
-        let assistantMessage = '';
-        for await (const chunk of stream) {
-          console.log('Chunk received:', chunk); // Log chunk for debugging
-          const content = chunk.choices[0]?.delta?.content || '';
-          assistantMessage += content;
-          appendMessage(assistantMessage, 'received');
-        }
-      } catch (error) {
-        console.error('Error sending message:', error.message);
-        appendMessage('Sorry, something went wrong. Check the console for details.', 'received');
-      }
-    }
-
-    async function getGroqChatStream(userInput) {
-      console.log('Fetching chat stream...');
-      try {
-        return await groq.chat.completions.create({
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant.",
-            },
-            {
-              role: "user",
-              content: "Behave like my girlfriend sweet and naughty keep your responses short",
-            },
-            {
-              role: "user",
-              content: userInput,
-            },
-          ],
-          model: "llama3-8b-8192",
-          temperature: 0.5,
-          max_tokens: 1024,
-          top_p: 1,
-          stop: null,
-          stream: true,
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map', {
+            center: [0, 0], // Center the map at the equator
+            zoom: 3,        // Zoom level for global view
+            zoomControl: false
         });
-      } catch (error) {
-        console.error('Error getting chat stream:', error.message);
-        throw error;
-      }
-    }
 
-    function appendMessage(content, role) {
-      const messagesDiv = document.getElementById('messages');
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('message', role);
-      messageDiv.innerHTML = `<p>${content}</p>`;
-      messagesDiv.appendChild(messageDiv);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
-    }
-  </script>
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+			minZoom: 3,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        
+
+        
+
+        function createChatPopup(latlng) {
+            const orderCode = generateOrderCode();
+            const date01 = `${latlng.lat}-${latlng.lng}-${Date.now()}`;
+            
+            const popupContent = `
+                <div class="popup-content">
+                    <div class="popup-title">User ID: ${orderCode}</div>
+                    <div class="chat-box" id="chat-box-${date01}"></div>
+                    <textarea id="user-input-${date01}" class="chat-input" placeholder="Type your message here..."></textarea>
+                    <button id="send-button-${date01}" class="send-button">Chat</button>
+					<button id="send-button-${date01}" class="send-button" onclick="window.location.href='https://example.com';"> 1$ Tip</button>
+
+                </div>
+            `;
+
+            const popup = L.popup()
+                .setLatLng(latlng)
+                .setContent(popupContent)
+                .openOn(map);
+
+            // Add event listener to the send button in the newly created popup
+            document.getElementById(`send-button-${date01}`).addEventListener('click', async () => {
+                const userInput = document.getElementById(`user-input-${date01}`).value;
+                const chatBox = document.getElementById(`chat-box-${date01}`);
+
+                if (userInput.trim() === '') return;
+
+                // Append user message to chat box
+                chatBox.innerHTML += `<div class="chat-message user-message">${userInput}</div>`;
+                document.getElementById(`user-input-${date01}`).value = '';
+
+                try {
+                    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer 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`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            messages: [
+                                { role: "user", content: "Behave like my girlfriend sweet and naughty keep your responses short" },
+                                { role: "assistant", content: "Ooh, okay! *wink*" },
+                                { role: "user", content: "hi" },
+                                { role: "assistant", content: "Hiiiii, sweetheart! How's your day going?" },
+                                { role: "user", content: "hmm" },
+                                { role: "assistant", content: "*whispers* What's on your mind, baby?" },
+                                { role: "user", content: "nothing" },
+                                { role: "assistant", content: "*pinches* Ah, come on, don't be shy! Spill the tea, love!" },
+                                { role: "user", content: "lets fuck" },
+                                { role: "assistant", content: "*blushes* Oh, ssshhh, naughty girl!" },
+                                { role: "user", content: "how are you" },
+                                { role: "assistant", content: "*twirls hair* I'm doing great, babe! Just thinking about you!" },
+                                { role: 'user', content: userInput }
+                            ],
+                            model: "llama3-8b-8192",
+                            temperature: 1,
+                            max_tokens: 1024,
+                            top_p: 1,
+                            stream: false,
+                            stop: null
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Error: ${response.status} - ${errorText}`);
+                    }
+
+                    const data = await response.json();
+                    const assistantResponse = data.choices[0]?.message?.content || 'No response';
+
+                    // Append assistant response to chat box
+                    chatBox.innerHTML += `<div class="chat-message assistant-message">${assistantResponse}</div>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                } catch (error) {
+                    console.error('Error:', error);
+                    chatBox.innerHTML += `<div class="chat-message assistant-message">${error.message}</div>`;
+                }
+            });
+        }
+
+        function generateOrderCode() {
+            return Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+       const customIcon3 = L.icon({
+    iconUrl: 'https://cdn.unstability.ai/users/6f14c0e0-95ca-49d6-96d8-e3131d26a4cc/images/8a678b8a-793c-4b60-a74b-220d1b729720/1.png?width=828&quality=75&optimizer=image',
+    iconSize: [100, 150],
+    iconAnchor: [0, 0],
+    popupAnchor: [0, 0]
+});
+
+const customIcon4 = L.icon({
+    iconUrl: 'https://cdn.unstability.ai/users/6f14c0e0-95ca-49d6-96d8-e3131d26a4cc/images/8a678b8a-793c-4b60-a74b-220d1b729720/3.png?width=828&quality=75&optimizer=image',
+    iconSize: [100, 150],
+    iconAnchor: [0, 0],
+    popupAnchor: [0, 0]
+});
+
+const latitude3 = 50.878425240193245;
+const longitude3 = 4.706482887268067;
+
+const marker = L.marker([latitude3, longitude3], { icon: customIcon3 })
+    .addTo(map)
+    .on('click', function (e) {
+        createChatPopup(e.latlng);
+
+        // Change the icon after 10 seconds
+        setTimeout(function () {
+            marker.setIcon(customIcon4);
+        }, 30000);
+    });
+
+			
+			
+    </script>
 </body>
 </html>
